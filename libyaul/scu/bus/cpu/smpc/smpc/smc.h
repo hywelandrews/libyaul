@@ -200,7 +200,7 @@ smpc_smc_setsmem_call(void)
 ///
 /// Halts the sound CPU so its program stops. Call before the SH-2 programs the
 /// SCSP registers or sound RAM, since a running sound CPU program may rewrite
-/// them.
+/// them. @ref scsp_init does this and waits until the SCSP can be programmed.
 ///
 /// @warning Do not call this while an INTBACK can be issued, for example from a
 /// VBlank-OUT handler calling smpc_peripheral_intback_issue(): the SMPC command

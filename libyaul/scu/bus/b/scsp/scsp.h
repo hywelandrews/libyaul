@@ -43,6 +43,23 @@ __BEGIN_DECLS
 /// sets those words automatically; see @ref scsp_mvol_pack.
 #define SCSP_SOUND_MEMORY_SIZE (0x00080000UL)
 
+/// @brief Take over the SCSP from the sound CPU.
+///
+/// Halts the sound CPU (68EC000) with the SMPC sound off command and waits
+/// until it has stopped, so its program (the BIOS sound driver) can no
+/// longer rewrite SCSP registers or sound RAM. Then disables all SCSP
+/// interrupts and clears their pending flags.
+///
+/// Call once, before the SH-2 writes SCSP registers or sound RAM, and before
+/// an INTBACK can be issued (for example from a VBlank-OUT handler calling
+/// @ref smpc_peripheral_intback_issue): the SMPC command register is not
+/// locked, so interleaved commands can deadlock the handler. Call from
+/// user_init, before such a handler is installed.
+///
+/// The wait after the halt is a fixed, conservative delay, chosen with a wide
+/// margin over the time the halt actually takes. Not yet tested on hardware.
+void scsp_init(void);
+
 /// @brief Pack the master volume word.
 ///
 /// @param mem4mb MEM4MB (bit 9): true for 4Mbit DRAM, false for 1Mbit.
